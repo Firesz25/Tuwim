@@ -1,21 +1,60 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using DSharpPlus;
+using Newtonsoft.Json;
 
 namespace DiscordBot
 {
     class Program
     {
-        static void Main(string[] args)
+        private static List<Item> LoadJson(string path)
+        {
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);
+                return items;
+            }
+        }
+        
+
+        private class Item
+        {
+            public string prefix;
+            public string token;
+            
+        }
+
+        private static void Main(string[] args)
         {
             MainAsync().GetAwaiter().GetResult();
         }
-
-        static async Task MainAsync()
+        private static string Getjson(string fileinjson)
         {
+            var config = LoadJson("configBot.json");
+            {
+                foreach (var conf in config)
+                {
+                    if (fileinjson == "prefix")
+                    {
+                        fileinjson = conf.prefix;
+                    }else if (fileinjson == "token")
+                    {
+                        fileinjson = conf.token;
+                    }
+                }
+            }
+            return fileinjson;
+        }
+
+        private static async Task MainAsync()
+        {
+
             var discord = new DiscordClient(new DiscordConfiguration()
             {
-                Token = "My First Token",
+                Token = Getjson("token"),
                 TokenType = TokenType.Bot
             });
 
