@@ -26,7 +26,6 @@ namespace DiscordBot
             public string token;
             
         }
-        const string a 
 
         private static void Main(string[] args)
         {
